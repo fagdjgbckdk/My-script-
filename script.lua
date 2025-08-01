@@ -29,12 +29,7 @@ l.BackgroundColor3 = Color3.fromRGB(50,50,50)
 local e = false
 local c = 10
 local function u()
-    if e then
-        h.ClimbSpeed = c
-    else
-        h.ClimbSpeed = 10
-    end
-    l.Text = "Climb: "..h.ClimbSpeed
+    l.Text = "Climb: "..c
 end
 t.MouseButton1Click:Connect(function()
     e = not e
@@ -51,3 +46,14 @@ down.MouseButton1Click:Connect(function()
     u()
 end)
 u()
+game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+    h = char:WaitForChild("Humanoid")
+end)
+while true do
+    if e then
+        pcall(function()
+            h.ClimbSpeed = c
+        end)
+    end
+    wait(0.1)
+end
