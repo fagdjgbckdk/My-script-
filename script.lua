@@ -43,11 +43,11 @@ t.MouseButton1Click:Connect(function()
     u()
 end)
 up.MouseButton1Click:Connect(function()
-    c = c + 5
+    c = c + 50
     u()
 end)
 down.MouseButton1Click:Connect(function()
-    c = math.max(10,c-5)
+    c = math.max(10,c-50)
     u()
 end)
 u()
