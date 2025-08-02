@@ -1,5 +1,4 @@
 local p = game.Players.LocalPlayer
-local h = p.Character:WaitForChild("Humanoid")
 local g = Instance.new("ScreenGui", game.CoreGui)
 local f = Instance.new("Frame", g)
 local t = Instance.new("TextButton", f)
@@ -24,12 +23,12 @@ down.Text = "Climb -"
 down.BackgroundColor3 = Color3.fromRGB(0,0,100)
 l.Size = UDim2.new(0,200,0,30)
 l.Position = UDim2.new(0,10,0,90)
-l.Text = "Climb: 10"
+l.Text = "Climb Speed: 50"
 l.BackgroundColor3 = Color3.fromRGB(50,50,50)
 local e = false
-local c = 10
+local c = 50
 local function u()
-    l.Text = "Climb: "..c
+    l.Text = "Climb Speed: "..c
 end
 t.MouseButton1Click:Connect(function()
     e = not e
@@ -46,14 +45,21 @@ down.MouseButton1Click:Connect(function()
     u()
 end)
 u()
-game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-    h = char:WaitForChild("Humanoid")
-end)
-while true do
-    if e then
-        pcall(function()
-            h.ClimbSpeed = c
-        end)
-    end
-    wait(0.1)
+local humanoid, rootPart
+local function refresh()
+    local char = p.Character or p.CharacterAdded:Wait()
+    humanoid = char:WaitForChild("Humanoid")
+    rootPart = char:WaitForChild("HumanoidRootPart")
 end
+refresh()
+p.CharacterAdded:Connect(refresh)
+game:GetService("RunService").RenderStepped:Connect(function()
+    if e and humanoid and rootPart and humanoid:GetState() == Enum.HumanoidStateType.Climbing then
+        local bv = Instance.new("BodyVelocity")
+        bv.Velocity = Vector3.new(0, c, 0)
+        bv.MaxForce = Vector3.new(0, math.huge, 0)
+        bv.P = 1250
+        bv.Parent = rootPart
+        game.Debris:AddItem(bv, 0.1)
+    end
+end)
